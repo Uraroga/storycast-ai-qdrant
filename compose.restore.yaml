@@ -1,0 +1,20 @@
+# Progetto separato; nessuna porta host e nessun volume di produzione.
+services:
+  postgres:
+    image: postgres@sha256:846a7ddaa67a4b354ae1d21087b683901aa6113a4ed626d3787cfbf6c85e3e07
+    env_file: .env
+    volumes:
+      - restore_pg:/var/lib/postgresql/data
+    mem_limit: 512m
+    cpus: 0.5
+  qdrant:
+    image: qdrant/qdrant@sha256:d18c8e5061be3eaea2f53fbee1f0bf0382dc59cbb9b7112e41ffcc937ec14220
+    command: ["./qdrant", "--snapshot", "/backup/qdrant.snapshot:storycast_e5_small_v1"]
+    volumes:
+      - restore_qdrant:/qdrant/storage
+      - ${BACKUP_DIR:?Impostare BACKUP_DIR}:/backup:ro
+    mem_limit: 512m
+    cpus: 0.5
+volumes:
+  restore_pg:
+  restore_qdrant:

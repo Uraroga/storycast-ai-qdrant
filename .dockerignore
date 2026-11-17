@@ -1,0 +1,12 @@
+# Contesto di build limitato ai file COPY del Dockerfile
+**
+!Dockerfile
+!requirements.txt
+!requirements.lock
+!pytest.ini
+!app/
+!app/**
+!tests/
+!tests/**
+**/__pycache__/
+**/*.pyc
