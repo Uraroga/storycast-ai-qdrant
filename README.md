@@ -19,7 +19,7 @@ La **ricerca semantica** restituisce episodi distinti ordinati per affinità: il
 
 Procedura per una **nuova installazione**, in una directory separata da servizi esistenti. Non copiare questi file sopra un'installazione funzionante. Servono Ubuntu con Docker Engine e plugin Compose, Git, Bash, curl, Python 3 e sha256sum. Installare Docker seguendo la [documentazione ufficiale Ubuntu](https://docs.docker.com/engine/install/ubuntu/). I digest e l'ambiente attuali sono stati usati su Linux amd64; altre architetture non sono verificate. Prevedere diversi GB di disco e RAM: web e indicizzatore possono usare fino a 3 GB ciascuno, oltre ai database.
 
-Dopo che il repository sarà pubblicato:
+Per installare il progetto:
 
 ```bash
 git clone https://github.com/Uraroga/storycast-ai-qdrant.git
