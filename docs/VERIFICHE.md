@@ -37,3 +37,14 @@ Non sono stati eseguiti in questa fase una build completa, un avvio da volumi vu
 Non sono certificati carichi elevati, CPU ARM/GPU, accesso da Windows o playback grafico su tutti i browser. Nessuna prova di interruzione forzata dei database. Un backup SQL/Qdrant non include media, sorgenti o segreti; le impronte SQL e una query vettoriale non equivalgono a un confronto esaustivo di tutti i vettori. I volumi di ripristino conservati occupano spazio e richiedono gestione separata.
 
 L'avvertenza Starlette/AnyIO osservata nei test isolati riguarda un alias deprecato di `BlockingPortal`; non ha causato fallimenti. Le dipendenze fissate richiedono manutenzione periodica.
+
+## Revisione documentale — 17 novembre 2026
+
+- Flussi confrontati con `app/core.py`, `app/indexer.py`, `app/web.py`, interfaccia, schema SQL, Compose e script amministrativi. README ampliato con due diagrammi Mermaid di sequenza: indicizzazione manuale e alternative ricerca/catalogo.
+- Copie pubblicabili Word e PowerPoint in `docs/pubblici/`: corretti accesso al catalogo tramite FastAPI, ordine SQL/embedding e descrizione del payload Qdrant; rimossi riferimenti all’installazione privata, proprietà identificative, miniature e XML personalizzato. Gli originali sono conservati localmente e non vengono pubblicati.
+- Esclusi i tre PNG originali: lo schema generale introduce un componente assente; gli altri due sono sostituiti dai diagrammi di sequenza che esplicitano ordine e condizioni delle operazioni.
+- Controllati integrità ZIP/XML, riferimenti interni dei pacchetti Office, collegamenti Markdown locali e accessibilità delle fonti esterne principali. Confrontati i testi candidati con i segreti locali senza stamparli.
+- Apertura ed esportazione di Word e PowerPoint con LibreOffice in directory temporanea; i PDF di controllo non sono inclusi nel repository. Sintassi Python verificata con AST, Bash con `bash -n`, modello Compose validato con `config --quiet` senza applicarlo.
+- Nessuna suite applicativa rieseguita: questa revisione modifica soltanto documentazione. Nessun avvio/arresto/ricreazione di container, indicizzazione, backup, snapshot, ripristino o modifica dei database.
+
+Restano i limiti delle prove storiche: non sono stati eseguiti un collaudo da zero, benchmark, test di carico o audit completo delle dipendenze. I controlli documentali e sui metadati riducono il rischio di diffusione di informazioni private ma non costituiscono una certificazione forense.

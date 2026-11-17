@@ -15,7 +15,7 @@ flowchart LR
   W -->|percorso verificato| V[Storycast output video RO]
 ```
 
-PostgreSQL è la fonte autorevole: conserva gli episodi e la tabella `episode_sources`, che associa un nome di file univoco a un `episode_id` univoco. La tabella `episodes` preesistente non viene alterata; ID 1 resta intatto. Qdrant è un indice ricostruibile, non il catalogo.
+PostgreSQL è la fonte autorevole: conserva gli episodi e la tabella `episode_sources`, che associa un nome di file univoco a un `episode_id` univoco. Lo schema della tabella `episodes` preesistente non viene alterato. I record non associati a sorgenti non vengono sovrascritti dall’importazione. Qdrant è un indice ricostruibile, non il catalogo.
 
 ```mermaid
 sequenceDiagram
@@ -39,7 +39,7 @@ Gli UUID stabili impediscono duplicazioni a ogni esecuzione. Se un testo diventa
 
 Il modello ha un limite di 512 token. Si usano finestre da 420 token con passo 360, lasciando spazio al prefisso e ai token speciali. I vettori sono normalizzati e confrontati mediante coseno. Il punteggio misura affinità, non probabilità: la demo restituisce i migliori episodi anche per una domanda fuori tema. Non genera risposte e non usa un LLM.
 
-Il modello occupa indicativamente circa 470 MB per i pesi; riservare 1–2 GB RAM per processo, fino a 3 GB col limite configurato. Sono stime, dipendenti da testo e batch; vedere le misure effettive in VERIFICHE.md. Web e indexer sono processi distinti e caricano ciascuno il modello; la cache su volume evita download ripetuti. I download richiedono Internet solo al primo caricamento.
+Il modello occupa indicativamente circa 470 MB per i pesi; riservare 1–2 GB RAM per processo, fino a 3 GB col limite configurato. Sono stime, dipendenti da testo e batch; vedere le misure effettive in VERIFICHE.md. Web e indexer sono processi distinti e caricano ciascuno il modello; la cache su volume evita download ripetuti. Una cache completa permette il caricamento offline con `HF_HUB_OFFLINE=1`; senza questa opzione possono avvenire richieste di metadati anche in seguito.
 
 # Docker
 
@@ -57,3 +57,7 @@ Le immagini originarie erano tag mobili (`postgres:17` e `qdrant/qdrant:latest`)
 ## Catalogo SQL e caricamento differito
 
 `GET /episodes` legge esclusivamente PostgreSQL: totale esatto, pagina ordinata per ID decrescente, cursore `before_id`, link video validati. Non chiama Qdrant né il modello. Il browser offre una vista catalogo separata e il ritorno alla ricerca. Il modello web è ora caricato solo dalla prima ricerca semantica, non all'avvio FastAPI. Dettagli e limiti di ordinamento/paginazione: [CATALOGO.md](CATALOGO.md).
+
+## Flussi verificati
+
+I due diagrammi nel [README](../README.md#come-passano-i-dati) distinguono indicizzazione, ricerca e catalogo. Il modello è caricato prima della sessione SQL; il commit dell’episodio precede i suoi embedding. La ricerca verifica prima la presenza della collection e recupera i metadati SQL dopo i gruppi Qdrant. Docker è l’ambiente di esecuzione, E5 una libreria nei processi applicativi.

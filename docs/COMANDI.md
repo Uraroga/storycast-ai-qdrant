@@ -20,12 +20,12 @@ Eseguire dalla directory del progetto. Non usare comandi di rimozione volumi. La
 | `curl -fsS http://127.0.0.1:6333/collections` | Legge le collection Qdrant. | `storycast_e5_small_v1` dopo l'indicizzazione. |
 | `docker compose logs --tail=100 web` | Legge ultimi log; non modifica dati. | Avvio completato, richieste HTTP, eventuali errori. |
 | `docker compose logs --tail=100 postgres qdrant` | Legge log dei due servizi. | Servizi pronti, nessun errore di storage. |
-| `docker compose run --rm --no-deps -e WEB_ALLOWED_NETWORKS= indexer pytest -o addopts= -m integration -q` | Esegue test unitari e integrazione; reindicizza davvero i dialoghi con stessi ID. | Tutti i test passano; non usare se un'altra persona sta modificando i dialoghi. |
+| `docker compose run --rm --no-deps -e WEB_ALLOWED_NETWORKS= indexer pytest -o addopts= -m integration -q` | Esegue solo i test marcati integration; reindicizza davvero i dialoghi con stessi ID. | Tutti i test passano; non usare se un'altra persona sta modificando i dialoghi. |
 | `docker compose run --rm --no-deps indexer pytest -q tests/test_unit.py` | Esegue solo test isolati, senza scrivere nei database. | I test isolati passano. |
 | `docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT id,title FROM episodes ORDER BY id"'` | Legge gli episodi; variabili risolte dentro il container, password non stampata. | ID 1 e dialoghi importati. |
 | `docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT * FROM episode_sources ORDER BY source_key"'` | Legge le associazioni e il completamento dell'indice. | Un ID per sorgente, `indexed_at` valorizzato. |
 | `docker stats --no-stream` | Fotografia dei consumi di tutti i container. | Limiti applicativi e RAM utilizzata. |
-| `python3 scripts/smoke.py` | Interroga il web reale su `192.0.2.10:8000`, cerca Docker/Kubernetes e legge 100 byte di ciascun video campione; non scrive dati. Richiede i dialoghi originali dimostrativi. | Messaggio finale di successo, HTTP 206 per i video. |
+| `python3 scripts/smoke.py` | Interroga il web reale su `127.0.0.1:8000` (oppure `STORYCAST_URL`), cerca Docker/Kubernetes e legge 100 byte di ciascun video campione; non scrive dati. Richiede i dialoghi originali dimostrativi. | Messaggio finale di successo, HTTP 206 per i video. |
 | `./scripts/backup.sh` | Blocca gli indicizzatori cooperativi, salva dump SQL e snapshot Qdrant con checksum, poi rilascia il lock. Non arresta servizi. | Percorso stampato, file `SHA256SUMS`. |
 | `./scripts/verify-restore.sh backups/NOME_CARTELLA` | Verifica checksum, crea un progetto isolato, importa realmente dump e snapshot, confronta conteggi, arresta copie; conserva i volumi di prova. | Messaggio di successo e nome del progetto isolato. |
 | `docker compose stop web` | Arresta il solo web; preserva tutti i dati. | Web stopped e DB/Qdrant attivi. |
@@ -42,11 +42,11 @@ Consultare la [procedura ufficiale Docker per Ubuntu](https://docs.docker.com/en
 
 | Comando | Effetto | Verifica |
 |---|---|---|
-| `cp .env.example .env` | Crea un file credenziali soltanto sulla nuova macchina; **non eseguirlo sull'installazione esistente**, sovrascriverebbe il file. | File presente; modificarlo con un editor prima del primo avvio. |
+| `cp -n .env.example .env` | Crea il file credenziali solo se assente; usarlo esclusivamente nella nuova copia e verificare il file prima di configurarlo. | File presente; modificarlo con un editor prima del primo avvio. |
 | `chmod 600 .env` | Limita lettura/scrittura al proprietario. | `ls -la` mostra `-rw-------`. |
 | `chmod 700 backups` | Limita l'accesso alla directory dei backup. | Permessi `drwx------`. |
 
-Impostare in `.env` una password casuale lunga e `STORYCAST_ROOT` se i dialoghi non sono nella cartella sorella `storycast-docker`. Copiare anche input e video con strumenti di trasferimento sicuri. L'utente UID 10001 deve poter leggere file e attraversare directory. Poi seguire i comandi di avvio sopra, nello stesso ordine.
+Impostare in `.env` una password casuale lunga e `STORYCAST_ROOT` sulla directory contenente `input/` e `output/` (default dimostrativo `./local/storycast`). Copiare anche input e video con strumenti di trasferimento sicuri. L'utente UID 10001 deve poter leggere file e attraversare directory. Poi seguire i comandi di avvio sopra, nello stesso ordine.
 
 Le variabili `POSTGRES_*` inizializzano un volume nuovo: cambiarle nel file **non** cambia automaticamente utenti e password di un database esistente. Non stampare `docker compose config` senza `--quiet`, perché risolverebbe anche i segreti.
 
