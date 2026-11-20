@@ -2,7 +2,13 @@
 
 Catalogo e ricerca semantica locale dei dialoghi di **Storycast**, con interfaccia web in italiano e riproduzione dei video già generati. Il progetto è indipendente da [Uraroga/storycast-docker](https://github.com/Uraroga/storycast-docker): ne legge `input/` e `output/` in sola lettura, senza modificare il generatore originale. Può usare anche una directory autonoma con lo stesso formato. Non genera video, non trascrive audio e non produce risposte con un LLM.
 
-## Architettura
+## Architettura generale
+
+Docker Compose collega FastAPI, l’indicizzatore Python, PostgreSQL e Qdrant. Il browser comunica con FastAPI via HTTP. E5 gira sulla CPU nei processi web e di indicizzazione. I TXT e i video MP4 risiedono sull’host e sono montati in sola lettura. Database e cache usano volumi distinti.
+
+![Il browser comunica con FastAPI. FastAPI e l’indicizzatore usano E5 sulla CPU e accedono a PostgreSQL e Qdrant. TXT e video risiedono sull’host.](docs/02-architettura-generale-storycast-qdrant-infografica-v2.png)
+
+*I servizi Docker Compose e i loro collegamenti con il browser e i file Storycast.* [Sorgente SVG](docs/02-architettura-generale-storycast-qdrant-infografica-v2.svg).
 
 | Servizio | Ruolo |
 |---|---|
@@ -13,80 +19,25 @@ Catalogo e ricerca semantica locale dei dialoghi di **Storycast**, con interfacc
 
 Il modello è [`intfloat/multilingual-e5-small`](https://huggingface.co/intfloat/multilingual-e5-small), con revisione fissata nel Compose. Usa i prefissi `query: ` e `passage: ` e finestre di 420 token con passo 360. Il primo utilizzo scarica i pesi; il calcolo degli embedding avviene sempre localmente. Con la cache completa, `HF_HUB_OFFLINE=1` impedisce le richieste a Hugging Face per il caricamento del modello. La cache vive in un volume dedicato. Non servono chiavi API né GPU.
 
-La **ricerca semantica** restituisce episodi distinti ordinati per affinità: il punteggio non è una probabilità. **Mostra tutti gli episodi** legge invece l'intero catalogo PostgreSQL, inclusi i record non indicizzati, con totale e paginazione per ID decrescente; funziona senza caricare il modello e senza consultare Qdrant.
-
 ## Come passano i dati
 
-Docker Compose è l’ambiente di esecuzione: collega i servizi tramite la propria rete e conserva database e cache in volumi distinti. Il modello E5 è una libreria caricata nei processi Python di `web` e `indexer`, non un servizio separato. I TXT e i video restano nelle directory host montate in sola lettura.
+### Indicizzazione manuale dei TXT
 
-### A. Indicizzazione manuale dei TXT
+Lo script `./aggiorna-storycast.sh` avvia l’indicizzatore. PostgreSQL conserva il catalogo degli episodi, mentre Qdrant conserva l’indice vettoriale derivato. L’indicizzatore salva l’ID dell’episodio prima di generare gli embedding e registra il completamento dopo l’aggiornamento di Qdrant.
 
-```mermaid
-sequenceDiagram
-    actor O as Operatore
-    box Ambiente Docker Compose
-        participant I as Indexer Python
-        participant E as E5 nel processo indexer CPU
-        participant P as PostgreSQL catalogo autorevole
-        participant Q as Qdrant indice vettoriale
-    end
-    O->>I: aggiorna-storycast.sh oppure compose run indexer
-    I->>E: Carica modello e verifica dimensione 384
-    I->>P: Acquisisce lock di sessione
-    I->>Q: Crea o verifica collection compatibile
-    I->>P: Crea mapping se assente e commit
-    loop Ogni TXT valido in input montato in sola lettura
-        I->>I: Legge e pulisce testo, verifica percorso video
-        I->>P: Inserisce o aggiorna episodio e mapping
-        I->>P: indexed_at NULL e commit con ID stabile
-        I->>E: Titolo e testo in finestre 420 token, passo 360
-        E-->>I: Embedding normalizzati con prefisso passage:
-        I->>Q: Upsert UUID per episodio e frammento
-        I->>Q: Elimina solo frammenti oltre la nuova lunghezza
-        I->>P: indexed_at now e commit
-    end
-```
+![Flusso dai TXT all’indicizzatore Python, al catalogo PostgreSQL, al modello E5 su CPU e all’indice Qdrant, con conferma finale in PostgreSQL.](docs/01-indicizzazione-storycast-qdrant-infografica.png)
 
-L’ID SQL viene quindi salvato **prima** degli embedding del singolo episodio. Il modello viene però caricato e verificato prima di aprire la sessione SQL. Qdrant conserva vettori e payload `episode_id`, `chunk`, `model_revision`; titoli, descrizioni e testi completi rimangono in PostgreSQL. Non memorizza copie dei video né il testo dei frammenti.
+*Dai dialoghi in formato TXT al catalogo e all’indice vettoriale.* [Sorgente SVG](docs/01-indicizzazione-storycast-qdrant-infografica.svg).
 
-### B. Ricerca semantica e catalogo completo
+### Ricerca semantica, catalogo e riproduzione video
 
-```mermaid
-sequenceDiagram
-    actor B as Browser
-    box Ambiente Docker Compose
-        participant W as FastAPI porta 8000
-        participant E as E5 nel processo web CPU
-        participant Q as Qdrant indice vettoriale
-        participant P as PostgreSQL catalogo autorevole
-    end
-    alt Ricerca per significato
-        B->>W: GET /search?q=domanda
-        W->>Q: Verifica esistenza collection
-        alt Collection presente
-            W->>E: Embedding della domanda con prefisso query:
-            E-->>W: Vettore normalizzato a 384 dimensioni
-            W->>Q: Ricerca coseno, gruppi per episode_id
-            Q-->>W: ID episodi e punteggio del frammento migliore
-            W->>P: Recupera metadati per ciascun ID
-            P-->>W: Titolo, descrizione, percorso video
-            W->>W: Verifica disponibilità e confinamento dei video
-            W-->>B: Risultati JSON ordinati per affinità
-        else Collection assente
-            W-->>B: Lista risultati vuota senza caricare E5
-        end
-    else Mostra tutti gli episodi
-        B->>W: GET /episodes con limite e cursore opzionale
-        W->>P: Transazione di sola lettura, totale e pagina per ID
-        P-->>W: Episodi e percorsi video
-        W->>W: Verifica video e prepara cursore successivo
-        W-->>B: Catalogo JSON con totale e paginazione
-    end
-```
+La **ricerca semantica** usa E5 e Qdrant per trovare episodi distinti in ordine di affinità. **Mostra tutti gli episodi** legge il catalogo PostgreSQL, con totale e paginazione per ID decrescente, senza usare E5 o Qdrant. Quando si sceglie un video, FastAPI verifica il percorso registrato in PostgreSQL e trasmette il file esistente dal filesystem.
 
-È FastAPI a interrogare i database: il browser comunica soltanto con il servizio web. Il catalogo non usa E5 o Qdrant. La ricerca restituisce per impostazione predefinita fino a 5 episodi distinti (massimo 20 via API), senza soglia minima di affinità e senza generare risposte. Eventuali punti privi del corrispondente episodio SQL vengono omessi.
+![Tre percorsi nel browser: ricerca semantica con E5 e Qdrant, catalogo paginato da PostgreSQL e riproduzione HTTP dei video già esistenti.](docs/03-ricerca-video-storycast-qdrant-infografica.png)
 
-La riproduzione è una richiesta successiva del browser a `/video/ID`: FastAPI legge il percorso in PostgreSQL, lo verifica e serve il file già esistente. Un video assente non impedisce la consultazione del testo descrittivo.
+*Dalla domanda o dal catalogo alla riproduzione del video scelto.* [Sorgente SVG](docs/03-ricerca-video-storycast-qdrant-infografica.svg).
+
+Le [sequenze tecniche in Mermaid](docs/ARCHITETTURA.md#flussi-verificati) documentano i passaggi e le condizioni di uscita.
 
 ## Installazione su Ubuntu
 
@@ -184,13 +135,13 @@ Autenticazione, HTTPS, ruoli SQL separati, metriche dei tempi, valutazione della
 
 ## Documentazione e licenza
 
-[Architettura](docs/ARCHITETTURA.md) · [Catalogo](docs/CATALOGO.md) · [Guida](docs/GUIDA.md) · [Lezioni](docs/LEZIONI.md) · [Domande](docs/DOMANDE.md) · [Verifiche](docs/VERIFICHE.md).
+[Architettura](docs/ARCHITETTURA.md) · [Catalogo](docs/CATALOGO.md) · [Guida operativa](docs/GUIDA.md) · [Comandi](docs/COMANDI.md) · [Lezioni](docs/LEZIONI.md) · [Domande](docs/DOMANDE.md) · [Verifiche](docs/VERIFICHE.md).
 
 Materiale di approfondimento revisionato:
 
 - [Guida ragionata in Word](docs/pubblici/Guida_Storycast_AI_Qdrant_pubblica.docx).
 - [Presentazione del progetto in PowerPoint](docs/pubblici/Storycast_AI_Qdrant_pubblica.pptx).
 
-Le copie pubbliche omettono riferimenti all’installazione privata e metadati identificativi. Le prove storiche citate non sono benchmark né verifiche rieseguite durante questa revisione. I diagrammi Mermaid sopra e il codice costituiscono il riferimento per l’ordine delle operazioni; le slide sintetizzano i concetti.
+Le copie pubbliche omettono riferimenti all’installazione privata e metadati identificativi. Le prove storiche citate non sono benchmark né verifiche rieseguite durante questa revisione. Le slide sintetizzano i concetti e la documentazione di architettura conserva le sequenze tecniche.
 
 Distribuito con [licenza MIT](LICENSE). Copyright © 2026 Sergio De Rossi (Uraroga). Le licenze di modelli, dipendenze e contenuti restano distinte.

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1720" viewBox="0 0 1200 860" role="img" aria-labelledby="title desc">
+<title id="title">Architettura generale di Storycast AI Qdrant</title><desc id="desc">Browser e file sul computer host. Nell’ambiente Compose, FastAPI e l’indicizzatore Python usano ciascuno E5 sulla CPU e si collegano a PostgreSQL e Qdrant.</desc>
+<style>
+text{font-family:"DejaVu Sans",sans-serif;fill:#111d2c}
+.light{fill:#fff}.pale{fill:#c9efff}.small{font-size:15px}.body{font-size:17px}.head{font-size:23px;font-weight:750;letter-spacing:-.5px}.caps{font-size:14px;font-weight:750;letter-spacing:.9px}.b{font-weight:700}
+</style><defs>
+<linearGradient id="banner" x2="1" y2=".8" gradientUnits="objectBoundingBox"><stop stop-color="#0762ad"/><stop offset=".75" stop-color="#062d64"/><stop offset="1" stop-color="#031e47"/></linearGradient>
+<linearGradient id="panel" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#e1f2ff"/><stop offset="1" stop-color="#f5faff"/></linearGradient>
+<marker id="end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.1" markerHeight="3.1" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#073b78"/></marker>
+<linearGradient id="blue" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#eaf8ff"/><stop offset="1" stop-color="#cceaff"/></linearGradient>
+<linearGradient id="green" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#efffed"/><stop offset="1" stop-color="#d0f1d0"/></linearGradient>
+<linearGradient id="orange" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff8e8"/><stop offset="1" stop-color="#ffebc0"/></linearGradient>
+<linearGradient id="purple" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f8f1ff"/><stop offset="1" stop-color="#e8d7ff"/></linearGradient>
+<linearGradient id="pink" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff2f5"/><stop offset="1" stop-color="#fbdbe5"/></linearGradient>
+<linearGradient id="navy" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f1f7ff"/><stop offset="1" stop-color="#dfeaff"/></linearGradient>
+<symbol id="i-film" viewBox="0 0 64 64"><rect x="5" y="9" width="54" height="45" rx="8" fill="currentColor"/><path d="M17 10v43m30-43v43" stroke="white" stroke-width="3"/><path d="M9 17h4m-4 10h4m-4 10h4m-4 10h4m38-30h4m-4 10h4m-4 10h4m-4 10h4" stroke="white" stroke-width="3"/><path d="m26 22 16 10-16 10z" fill="white"/></symbol>
+<symbol id="i-txt" viewBox="0 0 64 64"><path d="M10 14h29l10 10v33H10z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M20 5h29l10 10v33H20z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M49 5v11h10M26 22h25m-25 6h20" fill="none" stroke="currentColor" stroke-width="3"/><rect x="18" y="33" width="43" height="18" rx="4" fill="currentColor"/><text x="39.5" y="46" text-anchor="middle" font-size="13" font-weight="800" class="light">TXT</text></symbol>
+<symbol id="i-cli" viewBox="0 0 64 64"><rect x="4" y="9" width="56" height="46" rx="8" fill="currentColor"/><path d="M11 23h42v25H11z" fill="#203b36"/><path d="m19 29 9 6-9 6m14 1h11" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/><path d="M12 16h1m6 0h1m6 0h1" stroke="#dfffe5" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-code" viewBox="0 0 64 64"><rect x="7" y="9" width="50" height="46" rx="8" fill="currentColor"/><path d="m23 23-9 9 9 9m18-18 9 9-9 9m-5-22-8 26" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-db" viewBox="0 0 64 64"><path d="M7 15v34c0 14 50 14 50 0V15" fill="currentColor"/><ellipse cx="32" cy="15" rx="25" ry="10" fill="currentColor" stroke="white" stroke-width="2"/><path d="M8 26c4 12 44 12 48 0M8 38c4 12 44 12 48 0" fill="none" stroke="white" stroke-width="2.5"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 64 64"><path d="M22 4v56M32 4v56M42 4v56M4 22h56M4 32h56M4 42h56" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="12" y="12" width="40" height="40" rx="8" fill="currentColor"/><rect x="21" y="21" width="22" height="22" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M27 32h10m-5-5v10" stroke="white" stroke-width="2"/></symbol>
+<symbol id="i-vec" viewBox="0 0 64 64"><path d="m32 4 25 14v28L32 60 7 46V18z" fill="currentColor"/><path d="m32 13 16 10v18L32 51 16 41V23z M16 23l16 10 16-10M32 33v18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="32" cy="33" r="4" fill="white"/></symbol>
+<symbol id="i-ok" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/><path d="m19 32 9 10 17-19" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-web" viewBox="0 0 64 64"><rect x="4" y="7" width="56" height="41" rx="7" fill="currentColor"/><rect x="10" y="20" width="44" height="22" rx="2" fill="white"/><path d="M12 14h1m6 0h1m6 0h1" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M32 46v10m-12 0h24" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+<symbol id="i-docker" viewBox="0 0 64 64"><path d="M4 36h47c1-6 4-9 7-10l2 8 4 1c-2 7-8 9-13 9-8 14-17 17-30 17C10 61 4 53 4 36zM9 26h9v8H9zm11 0h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zM20 16h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zm0-10h9v8h-9z" fill="currentColor"/></symbol>
+<symbol id="i-info" viewBox="0 0 64 64"><circle cx="32" cy="32" r="25" fill="currentColor"/><path d="M32 28v16" stroke="white" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="19" r="3" fill="white"/></symbol>
+</defs>
+<rect x="0" y="0" width="1200" height="860" rx="0" fill="#fff" stroke="none" stroke-width="2"/>
+<rect x="22" y="18" width="1156" height="128" rx="24" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<use href="#i-film" x="61" y="41" width="80" height="80" color="#cceeff"/>
+<text x="164" y="51" class="caps pale" >STORYCAST AI QDRANT</text>
+<text x="162" y="93" class="light" font-size="37" font-weight="800" letter-spacing="-.8">Architettura generale di Storycast AI Qdrant</text>
+<text x="164" y="122" class="light body" >Dal browser ai servizi Docker, ai file Storycast e ai due database.</text>
+<rect x="48" y="165" width="342" height="102" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-txt" x="61" y="176" width="49" height="49" color="#0759b6"/>
+<text x="121" y="200" class="head" >File TXT</text>
+<text x="64" y="235" class="small" >Dialoghi degli episodi nella cartella input.</text>
+<rect x="429" y="165" width="342" height="102" rx="17" fill="url(#navy)" stroke="#719ed9" stroke-width="2"/>
+<use href="#i-web" x="442" y="176" width="49" height="49" color="#173e79"/>
+<text x="502" y="200" class="head" >Browser web</text>
+<text x="445" y="235" class="small" >Consulta il catalogo, cerca e guarda video.</text>
+<rect x="810" y="165" width="342" height="102" rx="17" fill="url(#pink)" stroke="#e55172" stroke-width="2"/>
+<use href="#i-film" x="823" y="176" width="49" height="49" color="#ae234d"/>
+<text x="883" y="200" class="head" >Video MP4</text>
+<text x="826" y="235" class="small" >File multimediali nella cartella output.</text>
+<rect x="22" y="306" width="1156" height="486" rx="22" fill="url(#panel)" stroke="#7abbf3" stroke-width="2.5"/>
+<rect x="32" y="750" width="1136" height="34" rx="13" fill="#d1eafd" stroke="none" stroke-width="2"/>
+<use href="#i-docker" x="43" y="752" width="30" height="30" color="#007de4"/>
+<text x="87" y="775" class="head" style="font-size:21px" >Ambiente Docker Compose</text>
+<path d="M425 755v24" stroke="#84b7e8" stroke-width="2"/>
+<text x="443" y="774" class="body" >FastAPI e indicizzatore usano lo stesso modello in processi distinti</text>
+<path d="M219 267V405" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M747 392H620Q600 392 600 372V271" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M747 392H886Q902 392 902 406" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M1028 267V405" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<text x="229" y="292" class="small b" >input · sola lettura</text>
+<text x="616" y="291" class="small b" >HTTP</text>
+<text x="1038" y="292" class="small b" >sola lettura</text>
+<rect x="48" y="410" width="342" height="293" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-code" x="61" y="421" width="49" height="49" color="#147b29"/>
+<text x="121" y="445" class="head" >Indicizzatore Python</text>
+<text x="121" y="466" class="small b" >Container temporaneo</text>
+<text x="64" y="491" class="body" >Pulisce i TXT e verifica i video</text>
+<text x="64" y="512" class="body" >nella cartella output e aggiorna</text>
+<text x="64" y="533" class="body" >il catalogo e l’indice vettoriale.</text>
+<rect x="63" y="584" width="312" height="103" rx="13" fill="url(#orange)" stroke="#ed9410" stroke-width="2"/>
+<use href="#i-cpu" x="75" y="598" width="44" height="44" color="#b95900"/>
+<text x="130" y="612" class="head" style="font-size:20px">Modello E5 su CPU</text>
+<text x="130" y="636" class="small" >intfloat/multilingual-e5-small</text>
+<text x="77" y="664" class="small" >Converte i frammenti in vettori.</text>
+<rect x="810" y="410" width="342" height="293" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-web" x="823" y="421" width="49" height="49" color="#147b29"/>
+<text x="883" y="445" class="head" >FastAPI</text>
+<text x="883" y="466" class="small b" >Container web</text>
+<text x="826" y="491" class="small" >Serve pagina, catalogo e ricerca.</text>
+<text x="826" y="512" class="small" >Legge da PostgreSQL il percorso video</text>
+<text x="826" y="533" class="small" >e trasmette al browser il video disponibile.</text>
+<rect x="825" y="584" width="312" height="103" rx="13" fill="url(#orange)" stroke="#ed9410" stroke-width="2"/>
+<use href="#i-cpu" x="837" y="598" width="44" height="44" color="#b95900"/>
+<text x="892" y="612" class="head" style="font-size:20px">Modello E5 su CPU</text>
+<text x="892" y="636" class="small" >intfloat/multilingual-e5-small</text>
+<text x="839" y="664" class="small" >Converte la domanda in un vettore.</text>
+<rect x="462" y="416" width="276" height="125" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="475" y="427" width="49" height="49" color="#0759b6"/>
+<text x="535" y="451" class="head" >PostgreSQL</text>
+<text x="478" y="486" class="small" >Conserva episodi, testi, metadati</text>
+<text x="478" y="507" class="small" >e riferimenti ai video.</text>
+<rect x="462" y="622" width="276" height="125" rx="17" fill="url(#purple)" stroke="#9245e9" stroke-width="2"/>
+<use href="#i-vec" x="475" y="633" width="49" height="49" color="#641bbc"/>
+<text x="535" y="657" class="head" >Qdrant</text>
+<text x="478" y="692" class="small" >Conserva l’indice dei vettori,</text>
+<text x="478" y="713" class="small" >collegati all’ID dell’episodio.</text>
+<path d="M390 477H458" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M810 477H742" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M390 658H458" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M810 658H742" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<text x="424" y="465" class="small b" text-anchor="middle">scrive</text>
+<text x="776" y="465" class="small b" text-anchor="middle">legge</text>
+<text x="424" y="646" class="small b" text-anchor="middle">scrive</text>
+<text x="776" y="646" class="small b" text-anchor="middle">cerca</text>
+<rect x="48" y="804" width="1104" height="38" rx="12" fill="url(#navy)" stroke="#9cbae2" stroke-width="2"/>
+<use href="#i-info" x="56" y="809" width="27" height="27" color="#1c60a3"/>
+<text x="93" y="829" class="small b" >Le cartelle input e output risiedono sul computer e sono montate in sola lettura nei container applicativi.</text>
+</svg>

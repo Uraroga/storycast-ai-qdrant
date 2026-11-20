@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="2192" viewBox="0 0 1200 1096" role="img" aria-labelledby="title desc">
+<title id="title">Storycast AI Qdrant — Come cercare gli episodi e riprodurre i video</title>
+<desc id="desc">Tre percorsi nel browser: ricerca per affinità con FastAPI, E5, Qdrant e PostgreSQL; catalogo completo con PostgreSQL; riproduzione del video originale tramite FastAPI.</desc>
+<style>
+text{font-family:"DejaVu Sans",sans-serif;fill:#111d2c}
+.light{fill:#fff}.pale{fill:#c9efff}.small{font-size:15px}.body{font-size:17px}.head{font-size:23px;font-weight:750;letter-spacing:-.5px}.caps{font-size:14px;font-weight:750;letter-spacing:.9px}.b{font-weight:700}
+.route{font-size:22px;font-weight:750;fill:white}.node{font-size:19px;font-weight:750;letter-spacing:-.3px}.copy{font-size:15.5px}.micro{font-size:14px}</style><defs>
+<linearGradient id="banner" x2="1" y2=".8" gradientUnits="objectBoundingBox"><stop stop-color="#0762ad"/><stop offset=".75" stop-color="#062d64"/><stop offset="1" stop-color="#031e47"/></linearGradient>
+<linearGradient id="panel" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#e1f2ff"/><stop offset="1" stop-color="#f5faff"/></linearGradient>
+<marker id="end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.1" markerHeight="3.1" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#073b78"/></marker>
+<linearGradient id="blue" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#eaf8ff"/><stop offset="1" stop-color="#cceaff"/></linearGradient>
+<linearGradient id="green" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#efffed"/><stop offset="1" stop-color="#d0f1d0"/></linearGradient>
+<linearGradient id="orange" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff8e8"/><stop offset="1" stop-color="#ffebc0"/></linearGradient>
+<linearGradient id="purple" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f8f1ff"/><stop offset="1" stop-color="#e8d7ff"/></linearGradient>
+<linearGradient id="pink" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff2f5"/><stop offset="1" stop-color="#fbdbe5"/></linearGradient>
+<linearGradient id="navy" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f1f7ff"/><stop offset="1" stop-color="#dfeaff"/></linearGradient>
+<symbol id="i-film" viewBox="0 0 64 64"><rect x="5" y="9" width="54" height="45" rx="8" fill="currentColor"/><path d="M17 10v43m30-43v43" stroke="white" stroke-width="3"/><path d="M9 17h4m-4 10h4m-4 10h4m-4 10h4m38-30h4m-4 10h4m-4 10h4m-4 10h4" stroke="white" stroke-width="3"/><path d="m26 22 16 10-16 10z" fill="white"/></symbol>
+<symbol id="i-txt" viewBox="0 0 64 64"><path d="M10 14h29l10 10v33H10z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M20 5h29l10 10v33H20z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M49 5v11h10M26 22h25m-25 6h20" fill="none" stroke="currentColor" stroke-width="3"/><rect x="18" y="33" width="43" height="18" rx="4" fill="currentColor"/><text x="39.5" y="46" text-anchor="middle" font-size="13" font-weight="800" class="light">TXT</text></symbol>
+<symbol id="i-cli" viewBox="0 0 64 64"><rect x="4" y="9" width="56" height="46" rx="8" fill="currentColor"/><path d="M11 23h42v25H11z" fill="#203b36"/><path d="m19 29 9 6-9 6m14 1h11" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/><path d="M12 16h1m6 0h1m6 0h1" stroke="#dfffe5" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-code" viewBox="0 0 64 64"><rect x="7" y="9" width="50" height="46" rx="8" fill="currentColor"/><path d="m23 23-9 9 9 9m18-18 9 9-9 9m-5-22-8 26" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-db" viewBox="0 0 64 64"><path d="M7 15v34c0 14 50 14 50 0V15" fill="currentColor"/><ellipse cx="32" cy="15" rx="25" ry="10" fill="currentColor" stroke="white" stroke-width="2"/><path d="M8 26c4 12 44 12 48 0M8 38c4 12 44 12 48 0" fill="none" stroke="white" stroke-width="2.5"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 64 64"><path d="M22 4v56M32 4v56M42 4v56M4 22h56M4 32h56M4 42h56" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="12" y="12" width="40" height="40" rx="8" fill="currentColor"/><rect x="21" y="21" width="22" height="22" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M27 32h10m-5-5v10" stroke="white" stroke-width="2"/></symbol>
+<symbol id="i-vec" viewBox="0 0 64 64"><path d="m32 4 25 14v28L32 60 7 46V18z" fill="currentColor"/><path d="m32 13 16 10v18L32 51 16 41V23z M16 23l16 10 16-10M32 33v18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="32" cy="33" r="4" fill="white"/></symbol>
+<symbol id="i-ok" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/><path d="m19 32 9 10 17-19" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-web" viewBox="0 0 64 64"><rect x="4" y="7" width="56" height="41" rx="7" fill="currentColor"/><rect x="10" y="20" width="44" height="22" rx="2" fill="white"/><path d="M12 14h1m6 0h1m6 0h1" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M32 46v10m-12 0h24" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+<symbol id="i-docker" viewBox="0 0 64 64"><path d="M4 36h47c1-6 4-9 7-10l2 8 4 1c-2 7-8 9-13 9-8 14-17 17-30 17C10 61 4 53 4 36zM9 26h9v8H9zm11 0h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zM20 16h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zm0-10h9v8h-9z" fill="currentColor"/></symbol>
+<symbol id="i-info" viewBox="0 0 64 64"><circle cx="32" cy="32" r="25" fill="currentColor"/><path d="M32 28v16" stroke="white" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="19" r="3" fill="white"/></symbol>
+</defs>
+<rect x="0" y="0" width="1200" height="1096" rx="0" fill="white" stroke="none" stroke-width="2"/>
+<rect x="22" y="18" width="1156" height="128" rx="24" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<use href="#i-film" x="61" y="41" width="80" height="80" color="#cceeff"/>
+<text x="164" y="51" class="caps pale" >STORYCAST AI QDRANT</text>
+<text x="162" y="93" class="light" font-size="37" font-weight="800" letter-spacing="-.8">Come cercare gli episodi e riprodurre i video</text>
+<text x="164" y="122" class="light body" >Dalla domanda dell’utente alla ricerca intelligente e alla riproduzione del contenuto.</text>
+<rect x="22" y="163" width="1156" height="423" rx="22" fill="url(#panel)" stroke="#7abbf3" stroke-width="2"/>
+<rect x="38" y="173" width="315" height="40" rx="13" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<text x="54" y="200" class="route" >A — Ricerca semantica</text>
+<text x="373" y="199" class="small b" >Trova gli episodi più affini a una domanda o a un argomento.</text>
+<rect x="42" y="226" width="342" height="124" rx="17" fill="url(#navy)" stroke="#719ed9" stroke-width="2"/>
+<use href="#i-web" x="54" y="236" width="43" height="43" color="#173e79"/>
+<text x="104" y="262" class="node" >1  Browser web</text>
+<text x="56" y="291" class="copy" >L’utente cerca un episodio usando</text>
+<text x="56" y="310" class="copy" >parole o frasi in italiano.</text>
+<rect x="429" y="226" width="342" height="124" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-code" x="441" y="236" width="43" height="43" color="#147b29"/>
+<text x="491" y="262" class="node" >2  FastAPI</text>
+<text x="443" y="291" class="copy" >Riceve la domanda (GET /search).</text>
+<text x="443" y="310" class="copy" >Controlla prima se la raccolta di vettori</text>
+<text x="443" y="329" class="copy" >esiste in Qdrant.</text>
+<rect x="816" y="226" width="342" height="124" rx="17" fill="url(#orange)" stroke="#ed9410" stroke-width="2"/>
+<use href="#i-cpu" x="828" y="236" width="43" height="43" color="#b95900"/>
+<text x="878" y="262" class="node" >3  Modello E5 sulla CPU</text>
+<text x="830" y="291" class="copy" >Nel processo web, E5 trasforma</text>
+<text x="830" y="310" class="copy" >la domanda in un embedding:</text>
+<text x="830" y="329" class="copy" >384 numeri che ne descrivono il senso.</text>
+<path d="M384 288H425" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M771 288H812" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M987 350V380" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="816" y="384" width="342" height="135" rx="17" fill="url(#purple)" stroke="#9245e9" stroke-width="2"/>
+<use href="#i-vec" x="828" y="394" width="43" height="43" color="#641bbc"/>
+<text x="878" y="420" class="node" >4  Qdrant</text>
+<text x="830" y="449" class="copy" >Confronta il vettore della domanda</text>
+<text x="830" y="468" class="copy" >con quelli dei dialoghi indicizzati.</text>
+<text x="830" y="487" class="copy" >Raggruppa i risultati per ID episodio.</text>
+<rect x="429" y="384" width="342" height="135" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="441" y="394" width="43" height="43" color="#0759b6"/>
+<text x="491" y="420" class="node" >5  PostgreSQL</text>
+<text x="443" y="449" class="copy" >Dagli ID recupera titolo, descrizione</text>
+<text x="443" y="468" class="copy" >e percorso video. FastAPI verifica</text>
+<text x="443" y="487" class="copy" >la disponibilità del file.</text>
+<rect x="42" y="384" width="342" height="135" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-ok" x="54" y="394" width="43" height="43" color="#147b29"/>
+<text x="104" y="420" class="node" >6  Risultati nel browser</text>
+<text x="56" y="449" class="copy" >FastAPI restituisce gli episodi in ordine</text>
+<text x="56" y="468" class="copy" >di affinità semantica. Il punteggio</text>
+<text x="56" y="487" class="copy" >indica affinità, non probabilità.</text>
+<path d="M816 451H775" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M429 451H388" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="42" y="536" width="1116" height="31" rx="10" fill="url(#orange)" stroke="#ed9410" stroke-width="2"/>
+<use href="#i-info" x="48" y="540" width="23" height="23" color="#b95900"/>
+<text x="78" y="557" class="small" >Se la raccolta Qdrant manca, FastAPI restituisce un elenco vuoto prima di usare E5.</text>
+<rect x="22" y="601" width="1156" height="196" rx="22" fill="url(#panel)" stroke="#7abbf3" stroke-width="2"/>
+<rect x="38" y="611" width="315" height="40" rx="13" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<text x="54" y="638" class="route" >B — Catalogo completo</text>
+<text x="373" y="637" class="small b" >Il catalogo completo si consulta direttamente in PostgreSQL, senza E5 né Qdrant.</text>
+<rect x="42" y="664" width="261" height="116" rx="17" fill="url(#navy)" stroke="#719ed9" stroke-width="2"/>
+<use href="#i-web" x="54" y="674" width="43" height="43" color="#173e79"/>
+<text x="104" y="700" class="node" >Browser web</text>
+<text x="56" y="729" class="copy" >L’utente seleziona «Mostra</text>
+<text x="56" y="748" class="copy" >tutti gli episodi».</text>
+<rect x="327" y="664" width="261" height="116" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-code" x="339" y="674" width="43" height="43" color="#147b29"/>
+<text x="389" y="700" class="node" >FastAPI</text>
+<text x="341" y="729" class="copy" >Riceve GET /episodes e</text>
+<text x="341" y="748" class="copy" >legge il catalogo SQL.</text>
+<rect x="612" y="664" width="261" height="116" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="624" y="674" width="43" height="43" color="#0759b6"/>
+<text x="674" y="700" class="node" >PostgreSQL</text>
+<text x="626" y="729" class="copy" >Restituisce totale e schede</text>
+<text x="626" y="748" class="copy" >in ordine di ID decrescente.</text>
+<rect x="897" y="664" width="261" height="116" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-ok" x="909" y="674" width="43" height="43" color="#147b29"/>
+<text x="959" y="700" class="node" >Elenco episodi</text>
+<text x="911" y="729" class="copy" >20 episodi per pagina, anche</text>
+<text x="911" y="748" class="copy" >quelli senza indice vettoriale.</text>
+<path d="M303 722h20" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M588 722h20" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M873 722h20" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="22" y="812" width="1156" height="233" rx="22" fill="url(#panel)" stroke="#7abbf3" stroke-width="2"/>
+<rect x="38" y="822" width="315" height="40" rx="13" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<text x="54" y="849" class="route" >C — Riproduzione video</text>
+<text x="373" y="848" class="small b" >Il video è già stato prodotto da Storycast originale.</text>
+<rect x="42" y="872" width="200" height="119" rx="17" fill="url(#navy)" stroke="#719ed9" stroke-width="2"/>
+<use href="#i-web" x="54" y="882" width="43" height="43" color="#173e79"/>
+<text x="104" y="908" class="node" style="font-size:17px">Selezione</text>
+<text x="56" y="937" class="micro" >Dai risultati o dal</text>
+<text x="56" y="956" class="micro" >catalogo si sceglie</text>
+<text x="56" y="975" class="micro" >«Riproduci video».</text>
+<rect x="271" y="872" width="200" height="119" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-code" x="283" y="882" width="43" height="43" color="#147b29"/>
+<text x="333" y="908" class="node" style="font-size:17px">FastAPI</text>
+<text x="285" y="937" class="micro" >Il browser chiede</text>
+<text x="285" y="956" class="micro" >GET /video/{id}.</text>
+<rect x="500" y="872" width="200" height="119" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="512" y="882" width="43" height="43" color="#0759b6"/>
+<text x="562" y="908" class="node" style="font-size:17px">PostgreSQL</text>
+<text x="514" y="937" class="micro" >Fornisce il percorso</text>
+<text x="514" y="956" class="micro" >video per l’ID chiesto.</text>
+<rect x="729" y="872" width="200" height="119" rx="17" fill="url(#pink)" stroke="#e55172" stroke-width="2"/>
+<use href="#i-film" x="741" y="882" width="43" height="43" color="#ae234d"/>
+<text x="791" y="908" class="node" style="font-size:17px">File video</text>
+<text x="743" y="937" class="micro" >FastAPI verifica il file</text>
+<text x="743" y="956" class="micro" >MP4 o WebM. Cartella</text>
+<text x="743" y="975" class="micro" >output in sola lettura.</text>
+<rect x="958" y="872" width="200" height="119" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-ok" x="970" y="882" width="43" height="43" color="#147b29"/>
+<text x="1020" y="908" class="node" style="font-size:17px">Riproduzione</text>
+<text x="972" y="937" class="micro" >FastAPI trasmette il</text>
+<text x="972" y="956" class="micro" >video via HTTP. Range</text>
+<text x="972" y="975" class="micro" >permette di spostarsi.</text>
+<path d="M242 931h25" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M471 931h25" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M700 931h25" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M929 931h25" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="42" y="1002" width="1116" height="31" rx="10" fill="url(#pink)" stroke="#e55172" stroke-width="2"/>
+<use href="#i-info" x="48" y="1006" width="23" height="23" color="#ae234d"/>
+<text x="78" y="1023" class="small" >Se il file è assente o il percorso non è valido, la richiesta video restituisce HTTP 404.</text>
+<text x="42" y="1072" class="small b" >FastAPI e PostgreSQL sono gli stessi servizi nei tre percorsi. E5 è una libreria nel processo FastAPI.</text>
+</svg>

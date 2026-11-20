@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1720" viewBox="0 0 1200 860" role="img" aria-labelledby="title desc">
+<title id="title">Come vengono indicizzati gli episodi di Storycast</title><desc id="desc">Flusso numerato dai TXT al catalogo PostgreSQL, alla generazione degli embedding E5 e all’indice Qdrant, con conferma finale nel catalogo.</desc>
+<style>
+text{font-family:"DejaVu Sans",sans-serif;fill:#111d2c}
+.light{fill:#fff}.pale{fill:#c9efff}.small{font-size:15px}.body{font-size:17px}.head{font-size:23px;font-weight:750;letter-spacing:-.5px}.caps{font-size:14px;font-weight:750;letter-spacing:.9px}.b{font-weight:700}
+</style><defs>
+<linearGradient id="banner" x2="1" y2=".8" gradientUnits="objectBoundingBox"><stop stop-color="#0762ad"/><stop offset=".75" stop-color="#062d64"/><stop offset="1" stop-color="#031e47"/></linearGradient>
+<linearGradient id="panel" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#e1f2ff"/><stop offset="1" stop-color="#f5faff"/></linearGradient>
+<marker id="end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.1" markerHeight="3.1" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#073b78"/></marker>
+<linearGradient id="blue" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#eaf8ff"/><stop offset="1" stop-color="#cceaff"/></linearGradient>
+<linearGradient id="green" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#efffed"/><stop offset="1" stop-color="#d0f1d0"/></linearGradient>
+<linearGradient id="orange" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff8e8"/><stop offset="1" stop-color="#ffebc0"/></linearGradient>
+<linearGradient id="purple" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f8f1ff"/><stop offset="1" stop-color="#e8d7ff"/></linearGradient>
+<linearGradient id="pink" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff2f5"/><stop offset="1" stop-color="#fbdbe5"/></linearGradient>
+<linearGradient id="navy" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#f1f7ff"/><stop offset="1" stop-color="#dfeaff"/></linearGradient>
+<symbol id="i-film" viewBox="0 0 64 64"><rect x="5" y="9" width="54" height="45" rx="8" fill="currentColor"/><path d="M17 10v43m30-43v43" stroke="white" stroke-width="3"/><path d="M9 17h4m-4 10h4m-4 10h4m-4 10h4m38-30h4m-4 10h4m-4 10h4m-4 10h4" stroke="white" stroke-width="3"/><path d="m26 22 16 10-16 10z" fill="white"/></symbol>
+<symbol id="i-txt" viewBox="0 0 64 64"><path d="M10 14h29l10 10v33H10z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M20 5h29l10 10v33H20z" fill="white" stroke="currentColor" stroke-width="3"/><path d="M49 5v11h10M26 22h25m-25 6h20" fill="none" stroke="currentColor" stroke-width="3"/><rect x="18" y="33" width="43" height="18" rx="4" fill="currentColor"/><text x="39.5" y="46" text-anchor="middle" font-size="13" font-weight="800" class="light">TXT</text></symbol>
+<symbol id="i-cli" viewBox="0 0 64 64"><rect x="4" y="9" width="56" height="46" rx="8" fill="currentColor"/><path d="M11 23h42v25H11z" fill="#203b36"/><path d="m19 29 9 6-9 6m14 1h11" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/><path d="M12 16h1m6 0h1m6 0h1" stroke="#dfffe5" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-code" viewBox="0 0 64 64"><rect x="7" y="9" width="50" height="46" rx="8" fill="currentColor"/><path d="m23 23-9 9 9 9m18-18 9 9-9 9m-5-22-8 26" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-db" viewBox="0 0 64 64"><path d="M7 15v34c0 14 50 14 50 0V15" fill="currentColor"/><ellipse cx="32" cy="15" rx="25" ry="10" fill="currentColor" stroke="white" stroke-width="2"/><path d="M8 26c4 12 44 12 48 0M8 38c4 12 44 12 48 0" fill="none" stroke="white" stroke-width="2.5"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 64 64"><path d="M22 4v56M32 4v56M42 4v56M4 22h56M4 32h56M4 42h56" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="12" y="12" width="40" height="40" rx="8" fill="currentColor"/><rect x="21" y="21" width="22" height="22" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M27 32h10m-5-5v10" stroke="white" stroke-width="2"/></symbol>
+<symbol id="i-vec" viewBox="0 0 64 64"><path d="m32 4 25 14v28L32 60 7 46V18z" fill="currentColor"/><path d="m32 13 16 10v18L32 51 16 41V23z M16 23l16 10 16-10M32 33v18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="32" cy="33" r="4" fill="white"/></symbol>
+<symbol id="i-ok" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/><path d="m19 32 9 10 17-19" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-web" viewBox="0 0 64 64"><rect x="4" y="7" width="56" height="41" rx="7" fill="currentColor"/><rect x="10" y="20" width="44" height="22" rx="2" fill="white"/><path d="M12 14h1m6 0h1m6 0h1" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M32 46v10m-12 0h24" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+<symbol id="i-docker" viewBox="0 0 64 64"><path d="M4 36h47c1-6 4-9 7-10l2 8 4 1c-2 7-8 9-13 9-8 14-17 17-30 17C10 61 4 53 4 36zM9 26h9v8H9zm11 0h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zM20 16h9v8h-9zm11 0h9v8h-9zm11 0h9v8h-9zm0-10h9v8h-9z" fill="currentColor"/></symbol>
+<symbol id="i-info" viewBox="0 0 64 64"><circle cx="32" cy="32" r="25" fill="currentColor"/><path d="M32 28v16" stroke="white" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="19" r="3" fill="white"/></symbol>
+</defs>
+<rect x="0" y="0" width="1200" height="860" rx="0" fill="#fff" stroke="none" stroke-width="2"/>
+<rect x="22" y="18" width="1156" height="128" rx="24" fill="url(#banner)" stroke="none" stroke-width="2"/>
+<use href="#i-film" x="61" y="41" width="80" height="80" color="#cceeff"/>
+<text x="164" y="51" class="caps pale" >STORYCAST AI QDRANT</text>
+<text x="162" y="93" class="light" font-size="37" font-weight="800" letter-spacing="-.8">Come vengono indicizzati gli episodi di Storycast</text>
+<text x="164" y="122" class="light body" >Dai dialoghi in formato TXT al catalogo degli episodi e alla ricerca semantica.</text>
+<rect x="48" y="165" width="517" height="100" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-txt" x="61" y="176" width="49" height="49" color="#0759b6"/>
+<text x="121" y="200" class="head" >1   File TXT di Storycast</text>
+<text x="64" y="235" class="body" >Dialoghi di Vivian e Ryan. La cartella input del computer</text>
+<text x="64" y="256" class="body" >è montata in sola lettura come /storycast/input.</text>
+<rect x="635" y="165" width="517" height="100" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-cli" x="648" y="176" width="49" height="49" color="#147b29"/>
+<text x="708" y="200" class="head" >2   Avvio dell’indicizzazione</text>
+<text x="651" y="235" class="body" >L’operatore esegue ./aggiorna-storycast.sh per avviare</text>
+<text x="651" y="256" class="body" >il container temporaneo dell’indicizzatore.</text>
+<path d="M565 215H631" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="22" y="286" width="1156" height="418" rx="22" fill="url(#panel)" stroke="#7abbf3" stroke-width="2.5"/>
+<rect x="32" y="295" width="1136" height="44" rx="13" fill="#d1eafd" stroke="none" stroke-width="2"/>
+<use href="#i-docker" x="43" y="298" width="34" height="34" color="#007de4"/>
+<text x="87" y="324" class="head" style="font-size:21px" >Ambiente Docker Compose</text>
+<path d="M425 305v25" stroke="#84b7e8" stroke-width="2"/>
+<text x="443" y="323" class="body" >Indicizzatore temporaneo e due database</text>
+<path d="M893 265V346" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+
+<rect x="48" y="350" width="342" height="161" rx="17" fill="url(#orange)" stroke="#ed9410" stroke-width="2"/>
+<use href="#i-cpu" x="61" y="361" width="49" height="49" color="#b95900"/>
+<text x="121" y="385" class="head" >5   Modello E5 su CPU</text>
+<text x="121" y="405" class="small">intfloat/multilingual-e5-small</text>
+<text x="64" y="426" class="small" >Titolo e dialogo in frammenti sovrapposti</text>
+<text x="64" y="447" class="small" >di massimo 420 token. Per ciascuno, E5</text>
+<text x="64" y="468" class="small" >genera un embedding: 384 numeri che</text>
+<text x="64" y="489" class="small" >rappresentano il significato del testo.</text>
+<rect x="429" y="350" width="342" height="161" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="442" y="361" width="49" height="49" color="#0759b6"/>
+<text x="502" y="385" class="head" >4   Catalogo SQL</text>
+<text x="445" y="420" class="small" >PostgreSQL salva titolo, descrizione, testo</text>
+<text x="445" y="441" class="small" >e l’eventuale percorso video. Associa il</text>
+<text x="445" y="462" class="small" >TXT a un ID stabile. Indicizzazione ancora</text>
+<text x="445" y="483" class="small" >da confermare.</text>
+<rect x="810" y="350" width="342" height="161" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-code" x="823" y="361" width="49" height="49" color="#147b29"/>
+<text x="883" y="385" class="head" style="font-size:20px" >3   Indicizzatore Python</text>
+<text x="826" y="420" class="small" >Verifica E5 e blocca altri indicizzatori</text>
+<text x="826" y="441" class="small" >in PostgreSQL. Prepara Qdrant e legge</text>
+<text x="826" y="462" class="small" >i TXT UTF-8, esclusi modelli e link.</text>
+<text x="826" y="483" class="small" >Toglie righe vuote e note tra quadre.</text>
+<text x="826" y="504" class="small" >Salta dialoghi vuoti e verifica i video.</text>
+<path d="M810 430H775" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M429 430H394" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M219 511V535" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="48" y="539" width="495" height="143" rx="17" fill="url(#purple)" stroke="#9245e9" stroke-width="2"/>
+<use href="#i-vec" x="61" y="550" width="49" height="49" color="#641bbc"/>
+<text x="121" y="574" class="head" >6   Indice vettoriale Qdrant</text>
+<text x="64" y="609" class="body" >Salva i vettori con l’ID episodio del catalogo</text>
+<text x="64" y="630" class="body" >e il numero del frammento. Dopo la conferma,</text>
+<text x="64" y="651" class="body" >rimuove i frammenti obsoleti e attende conferma.</text>
+<rect x="624" y="539" width="528" height="143" rx="17" fill="url(#blue)" stroke="#0783e8" stroke-width="2"/>
+<use href="#i-db" x="637" y="550" width="49" height="49" color="#0759b6"/>
+<text x="697" y="574" class="head" >7   Conferma in PostgreSQL</text>
+<text x="640" y="609" class="body" >Registra la data di completamento (indexed_at).</text>
+<text x="640" y="630" class="body" >Il log riporta l’ID dell’episodio e il numero di frammenti.</text>
+<path d="M543 610H620" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<path d="M888 682V720" fill="none" stroke="#073b78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#end)"/>
+<rect x="48" y="725" width="1104" height="65" rx="17" fill="url(#green)" stroke="#28a83b" stroke-width="2"/>
+<use href="#i-ok" x="61" y="736" width="49" height="49" color="#147b29"/>
+<text x="121" y="760" class="head" >Episodi indicizzati</text>
+<text x="370" y="753" class="small" >Catalogo aggiornato. La ricerca semantica trova gli episodi con vettori in Qdrant.</text>
+<text x="370" y="775" class="small" >Il catalogo può includere anche episodi senza vettori.</text>
+<rect x="48" y="806" width="1104" height="37" rx="12" fill="url(#orange)" stroke="#f1be64" stroke-width="2"/>
+<use href="#i-info" x="56" y="811" width="26" height="26" color="#a95909"/>
+<text x="92" y="830" class="small b" >Se l’importazione si ferma dopo il salvataggio del catalogo, l’indice può restare incompleto. Un nuovo avvio riusa gli ID.</text>
+</svg>

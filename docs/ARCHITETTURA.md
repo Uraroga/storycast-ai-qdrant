@@ -60,4 +60,73 @@ Le immagini originarie erano tag mobili (`postgres:17` e `qdrant/qdrant:latest`)
 
 ## Flussi verificati
 
-I due diagrammi nel [README](../README.md#come-passano-i-dati) distinguono indicizzazione, ricerca e catalogo. Il modello è caricato prima della sessione SQL; il commit dell’episodio precede i suoi embedding. La ricerca verifica prima la presenza della collection e recupera i metadati SQL dopo i gruppi Qdrant. Docker è l’ambiente di esecuzione, E5 una libreria nei processi applicativi.
+Il [README](../README.md#come-passano-i-dati) presenta le infografiche. Le sequenze qui sotto documentano le interazioni tra i componenti.
+
+### Indicizzazione manuale dei TXT
+
+```mermaid
+sequenceDiagram
+    actor O as Operatore
+    box Ambiente Docker Compose
+        participant I as Indexer Python
+        participant E as E5 nel processo indexer CPU
+        participant P as PostgreSQL catalogo autorevole
+        participant Q as Qdrant indice vettoriale
+    end
+    O->>I: aggiorna-storycast.sh oppure compose run indexer
+    I->>E: Carica modello e verifica dimensione 384
+    I->>P: Acquisisce lock di sessione
+    I->>Q: Crea o verifica collection compatibile
+    I->>P: Crea mapping se assente e commit
+    loop Ogni TXT valido in input montato in sola lettura
+        I->>I: Legge e pulisce testo, verifica percorso video
+        I->>P: Inserisce o aggiorna episodio e mapping
+        I->>P: indexed_at NULL e commit con ID stabile
+        I->>E: Titolo e testo in finestre 420 token, passo 360
+        E-->>I: Embedding normalizzati con prefisso passage:
+        I->>Q: Upsert UUID per episodio e frammento
+        I->>Q: Elimina solo frammenti oltre la nuova lunghezza
+        I->>P: indexed_at now e commit
+    end
+```
+
+Il modello viene caricato e verificato prima di aprire la sessione SQL. Il commit dell’episodio precede la generazione dei suoi embedding. Qdrant conserva i vettori e il payload `episode_id`, `chunk`, `model_revision`. Titoli, descrizioni e trascrizioni complete rimangono in PostgreSQL. I video risiedono sul filesystem.
+
+### Ricerca semantica e catalogo completo
+
+```mermaid
+sequenceDiagram
+    actor B as Browser
+    box Ambiente Docker Compose
+        participant W as FastAPI porta 8000
+        participant E as E5 nel processo web CPU
+        participant Q as Qdrant indice vettoriale
+        participant P as PostgreSQL catalogo autorevole
+    end
+    alt Ricerca per significato
+        B->>W: GET /search?q=domanda
+        W->>Q: Verifica esistenza collection
+        alt Collection presente
+            W->>E: Embedding della domanda con prefisso query:
+            E-->>W: Vettore normalizzato a 384 dimensioni
+            W->>Q: Ricerca coseno, gruppi per episode_id
+            Q-->>W: ID episodi e punteggio del frammento migliore
+            W->>P: Recupera metadati per ciascun ID
+            P-->>W: Titolo, descrizione, percorso video
+            W->>W: Verifica disponibilità e confinamento dei video
+            W-->>B: Risultati JSON ordinati per affinità
+        else Collection assente
+            W-->>B: Lista risultati vuota senza caricare E5
+        end
+    else Mostra tutti gli episodi
+        B->>W: GET /episodes con limite e cursore opzionale
+        W->>P: Transazione di sola lettura, totale e pagina per ID
+        P-->>W: Episodi e percorsi video
+        W->>W: Verifica video e prepara cursore successivo
+        W-->>B: Catalogo JSON con totale e paginazione
+    end
+```
+
+Il browser comunica con FastAPI, che interroga i database. La ricerca restituisce fino a 5 episodi distinti per impostazione predefinita, con un massimo di 20 via API e senza una soglia minima di affinità. I punti senza un episodio SQL corrispondente vengono omessi.
+
+La riproduzione richiede una chiamata successiva a `/video/ID`. FastAPI legge il percorso in PostgreSQL, lo verifica e trasmette il file esistente. Se il video è assente, la descrizione dell’episodio resta consultabile.
