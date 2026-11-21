@@ -1,4 +1,4 @@
-# Storycast AI Qdrant
+<h1 align="center">Storycast AI Qdrant</h1>
 
 <p align="center">
   <img src="assets/Mascotte_robotica_Storycast_AI_Qdrant.png" alt="Mascotte di Storycast AI Qdrant: robot con lente di ingrandimento e icone multimediali" width="380">
