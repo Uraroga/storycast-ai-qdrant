@@ -1,5 +1,9 @@
 # Storycast AI Qdrant
 
+<p align="center">
+  <img src="assets/Mascotte_robotica_Storycast_AI_Qdrant.png" alt="Mascotte di Storycast AI Qdrant: robot con lente di ingrandimento e icone multimediali" width="380">
+</p>
+
 Catalogo e ricerca semantica locale dei dialoghi di **Storycast**, con interfaccia web in italiano e riproduzione dei video già generati. Il progetto è indipendente da [Uraroga/storycast-docker](https://github.com/Uraroga/storycast-docker): ne legge `input/` e `output/` in sola lettura, senza modificare il generatore originale. Può usare anche una directory autonoma con lo stesso formato. Non genera video, non trascrive audio e non produce risposte con un LLM.
 
 ## Architettura generale
